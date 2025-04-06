@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Pas à Pas d'Audit de Sécurité Windows</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3, h4 {
+            color: #2563eb;
+            margin-top: 30px;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 8px;
+            margin-top: 0;
+        }
+        .subtitle {
+            text-align: center;
+            margin-top: -20px;
+            margin-bottom: 40px;
+            color: #666;
+        }
+        .step-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .step {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+        .step:last-child {
+            border-bottom: none;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2563eb;
+        }
+        .step-description {
+            margin-bottom: 15px;
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 14px;
+        }
+        .note {
+            background-color: #fff8e6;
+            border-left: 4px solid #eab308;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .tip {
+            background-color: #dbeafe;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .script-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .script-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .script-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #334155;
+        }
+        .script-controls {
+            display: flex;
+            gap: 10px;
+        }
+        .copy-btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background-color: #1d4ed8;
+        }
+        .section-nav {
+            position: sticky;
+            top: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .section-nav h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .section-nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .section-nav li {
+            margin-bottom: 10px;
+        }
+        .section-nav a {
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 500;
+        }
+        .section-nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guide Pas à Pas d'Audit de Sécurité Windows</h1>
+    <p class="subtitle">Un mini-audit facile à réaliser pour débutants</p>
+
+    <div class="section-nav">
+        <h3>Navigation rapide</h3>
+        <ul>
+            <li><a href="#preparation">1. Préparation de l'environnement</a></li>
+            <li><a href="#script1">2. Script d'audit de sécurité</a></li>
+            <li><a href="#script2">3. Script d'analyse des résultats</a></li>
+            <li><a href="#execution">4. Exécution de l'audit</a></li>
+            <li><a href="#analyse">5. Analyse des résultats</a></li>
+            <li><a href="#recommandations">6. Mise en œuvre des recommandations</a></li>
+        </ul>
+    </div>
+
+    <div class="step-container" id="preparation">
+        <h2>1. Préparation de l'environnement</h2>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">Créez un dossier pour les scripts</div>
+                <div class="step-description">
+                    <p>Créez un dossier dédié sur votre Bureau pour stocker les scripts d'audit de sécurité :</p>
+                    <ol>
+                        <li>Faites un clic droit sur votre Bureau</li>
+                        <li>Sélectionnez "Nouveau" > "Dossier"</li>
+                        <li>Nommez le dossier "WindowsSecurityAudit"</li>
+                        <li>Ouvrez ce dossier en double-cliquant dessus</li>
+                        <li>À l'intérieur de ce dossier, créez un autre dossier nommé "Scripts"</li>
+                    </ol>
+                    
+                    <div class="tip">
+                        <strong>Astuce :</strong> Gardez ce dossier facilement accessible, vous y reviendrez pour exécuter les scripts et consulter les résultats.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <div class="step-title">Ouvrez le Bloc-notes ou un autre éditeur de texte</div>
+                <div class="step-description">
+                    <p>Nous allons créer deux scripts PowerShell :</p>
+                    <ol>
+                        <li>Faites un clic droit sur le menu Démarrer (ou appuyez sur Windows + X)</li>
+                        <li>Sélectionnez "Exécuter"</li>
+                        <li>Tapez "notepad" et appuyez sur Entrée</li>
+                    </ol>
+                    
+                    <div class="note">
+                        <strong>Note :</strong> Vous pouvez également utiliser un éditeur de texte plus avancé comme Notepad++ ou Visual Studio Code si vous les avez installés.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <div class="step-title">Autorisez l'exécution des scripts PowerShell</div>
+                <div class="step-description">
+                    <p>Par défaut, Windows bloque l'exécution des scripts PowerShell pour des raisons de sécurité. Nous devons modifier cette configuration :</p>
+                    <ol>
+                        <li>Faites un clic droit sur le menu Démarrer (ou appuyez sur Windows + X)</li>
+                        <li>Sélectionnez "Windows PowerShell (Admin)" ou "Terminal (Admin)"</li>
+                        <li>Dans la fenêtre PowerShell, copiez et collez la commande suivante :</li>
+                    </ol>
+                    
+                    <div class="code-block">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process</div>
+                    
+                    <p>Cette commande permet d'exécuter des scripts PowerShell locaux pendant la session actuelle uniquement.</p>
+                    
+                    <div class="warning">
+                        <strong>Important :</strong> Si vous recevez un message vous demandant de confirmer ce changement, tapez "Y" puis Entrée.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-container" id="script1">
+        <h2>2. Script d'Audit de Sécurité</h2>
+
+        <div class="script-section">
+            <div class="script-header">
+                <div class="script-title">Script 1 : SecurityAudit.ps1</div>
+                <div class="script-controls">
+                    <button class="copy-btn" onclick="copyScript('script1')">Copier le script</button>
+                </div>
+            </div>
+            <textarea id="script1" readonly>
+# Script d'Audit de Sécurité Windows - Mini-Audit
+# Auteur: Claude-PowerShell-Expert
+# Date: 6 Avril 2025
+# Description: Ce script effectue un mini-audit de sécurité sur un poste Windows local
+# et génère un rapport au format JSON.
+
+# Définir le chemin du fichier de sortie JSON
+$outputFile = "$env:USERPROFILE\Desktop\security_audit_$(Get-Date -Format 'yyyyMMdd_HHmmss').json"
+
+# Fonction pour récupérer les comptes administrateurs locaux
+function Get-LocalAdminAccounts {
+    $adminGroupName = (New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-544")).Translate([System.Security.Principal.NTAccount]).Value.Split('\')[1]
+    $adminAccounts = Get-LocalGroupMember -Group $adminGroupName | Select-Object Name, ObjectClass, PrincipalSource
+    
+    return @($adminAccounts | ForEach-Object {
+        @{
+            Name = $_.Name
+            Type = $_.ObjectClass
+            Source = $_.PrincipalSource
+        }
+    })
+}
+
+# Fonction pour vérifier le statut de Windows Defender
+function Get-DefenderStatus {
+    try {
+        $defenderStatus = Get-MpComputerStatus
+        return @{
+            AntivirusEnabled = $defenderStatus.AntivirusEnabled
+            RealtimeProtectionEnabled = $defenderStatus.RealTimeProtectionEnabled
+            BehaviorMonitorEnabled = $defenderStatus.BehaviorMonitorEnabled
+            DefenderDefinitionAge = $defenderStatus.AntivirusSignatureAge
+            LastFullScanAge = $defenderStatus.FullScanAge
+            LastQuickScanAge = $defenderStatus.QuickScanAge
+        }
+    }
+    catch {
+        return @{
+            AntivirusEnabled = $false
+            RealtimeProtectionEnabled = $false
+            BehaviorMonitorEnabled = $false
+            DefenderDefinitionAge = -1
+            LastFullScanAge = -1
+            LastQuickScanAge = -1
+            Error = $_.Exception.Message
+        }
+    }
+}
+
+# Fonction pour vérifier le statut du pare-feu Windows
+function Get-FirewallStatus {
+    $firewallProfiles = Get-NetFirewallProfile
+    
+    return @($firewallProfiles | ForEach-Object {
+        @{
+            Profile = $_.Name
+            Enabled = $_.Enabled
+            DefaultInboundAction = $_.DefaultInboundAction
+            DefaultOutboundAction = $_.DefaultOutboundAction
+        }
+    })
+}
+
+# Fonction pour lister les ports ouverts (netstat)
+function Get-OpenPorts {
+    $netstatOutput = netstat -ano | Where-Object { $_ -match "LISTENING" }
+    $openPorts = @()
+    
+    foreach ($line in $netstatOutput) {
+        $parts = $line -split '\s+', 6 | Where-Object { $_ -ne "" }
+        if ($parts.Count -ge 5) {
+            $localAddress = $parts[2]
+            $processId = $parts[4]
+            
+            try {
+                $process = Get-Process -Id $processId -ErrorAction SilentlyContinue
+                $processName = if ($process) { $process.Name } else { "Unknown" }
+            }
+            catch {
+                $processName = "Unknown"
+            }
+            
+            if ($localAddress -match ':([\d]+)$') {
+                $port = $matches[1]
+                $openPorts += @{
+                    Port = $port
+                    Protocol = ($parts[1] -split "/")[0]
+                    ProcessId = $processId
+                    ProcessName = $processName
+                }
+            }
+        }
+    }
+    
+    return $openPorts
+}
+
+# Fonction pour vérifier les mises à jour Windows en attente
+function Get-PendingUpdates {
+    try {
+        $updateSession = New-Object -ComObject Microsoft.Update.Session
+        $updateSearcher = $updateSession.CreateUpdateSearcher()
+        $pendingUpdates = $updateSearcher.Search("IsInstalled=0 and IsHidden=0")
+        
+        if ($pendingUpdates -and $pendingUpdates.Updates) {
+            return @{
+                UpdateCount = $pendingUpdates.Updates.Count
+                CriticalUpdates = @($pendingUpdates.Updates | Where-Object { $_.MsrcSeverity -eq "Critical" }).Count
+                Updates = @($pendingUpdates.Updates | ForEach-Object {
+                    @{
+                        Title = $_.Title
+                        Severity = $_.MsrcSeverity
+                        Categories = @($_.Categories | ForEach-Object { $_.Name })
+                    }
+                })
+            }
+        } else {
+            return @{
+                UpdateCount = 0
+                CriticalUpdates = 0
+                Updates = @()
+            }
+        }
+    }
+    catch {
+        return @{
+            UpdateCount = 0
+            CriticalUpdates = 0
+            Updates = @()
+            Error = $_.Exception.Message
+        }
+    }
+}
+
+# Fonction pour vérifier la politique de mot de passe locale
+function Get-PasswordPolicy {
+    $passwordPolicy = net accounts
+    $policyInfo = @{}
+    
+    $passwordPolicy | ForEach-Object {
+        if ($_ -match '([\w\s]+):\s*(.+)') {
+            $policyInfo[$matches[1].Trim()] = $matches[2].Trim()
+        }
+    }
+    
+    return @{
+        MinimumPasswordLength = ($passwordPolicy | Select-String "Minimum password length").ToString() -replace ".*:\s*", ""
+        MaximumPasswordAge = ($passwordPolicy | Select-String "Maximum password age").ToString() -replace ".*:\s*", ""
+        MinimumPasswordAge = ($passwordPolicy | Select-String "Minimum password age").ToString() -replace ".*:\s*", ""
+        PasswordHistory = ($passwordPolicy | Select-String "Length of password history").ToString() -replace ".*:\s*", ""
+        LockoutThreshold = ($passwordPolicy | Select-String "Lockout threshold").ToString() -replace ".*:\s*", ""
+        LockoutDuration = ($passwordPolicy | Select-String "Lockout duration").ToString() -replace ".*:\s*", ""
+        LockoutWindow = ($passwordPolicy | Select-String "Lockout observation window").ToString() -replace ".*:\s*", ""
+    }
+}
+
+# Fonction pour récupérer la version de Windows
+function Get-WindowsVersionInfo {
+    $osInfo = Get-CimInstance Win32_OperatingSystem
+    $buildNumber = $osInfo.BuildNumber
+    
+    return @{
+        Caption = $osInfo.Caption
+        Version = $osInfo.Version
+        BuildNumber = $buildNumber
+        Architecture = $osInfo.OSArchitecture
+        InstallDate = $osInfo.InstallDate.ToString()
+        LastBootUpTime = $osInfo.LastBootUpTime.ToString()
+        SystemDrive = $osInfo.SystemDrive
+    }
+}
+
+# Collecter toutes les informations d'audit
+$auditData = @{
+    ComputerName = $env:COMPUTERNAME
+    ScanDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    LocalAdminAccounts = Get-LocalAdminAccounts
+    DefenderStatus = Get-DefenderStatus
+    FirewallStatus = Get-FirewallStatus
+    OpenPorts = Get-OpenPorts
+    PendingUpdates = Get-PendingUpdates
+    PasswordPolicy = Get-PasswordPolicy
+    WindowsVersion = Get-WindowsVersionInfo
+}
+
+# Convertir les données en JSON et les enregistrer dans un fichier
+$auditData | ConvertTo-Json -Depth 10 | Out-File -FilePath $outputFile -Encoding utf8
+
+Write-Host "L'audit de sécurité est terminé. Les résultats ont été enregistrés dans: $outputFile" -ForegroundColor Green
+Write-Host ""
+Write-Host "Pour analyser ces résultats, exécutez le script d'analyse avec:" -ForegroundColor Yellow
+Write-Host "`$auditData = Get-Content -Path `"$outputFile`" | ConvertFrom-Json" -ForegroundColor Yellow
+Write-Host ".\SimpleAnalyze.ps1 -AuditData `$auditData" -ForegroundColor Yellow
+</textarea>
+        </div>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">Créez le premier script PowerShell</div>
+                <div class="step-description">
+                    <p>Ce script collecte des informations sur la sécurité de votre système Windows :</p>
+                    <ol>
+                        <li>Copiez l'intégralité du code ci-dessus (utilisez le bouton "Copier le script")</li>
+                        <li>Collez-le dans le Bloc-notes</li>
+                        <li>Cliquez sur "Fichier" > "Enregistrer sous"</li>
+                        <li>Naviguez vers le dossier "WindowsSecurityAudit\Scripts" que vous avez créé sur votre Bureau</li>
+                        <li>Dans le champ "Nom de fichier", tapez <strong>SecurityAudit.ps1</strong></li>
+                        <li>Dans le menu déroulant "Type", sélectionnez "Tous les fichiers (*.*)"</li>
+                        <li>Cliquez sur "Enregistrer"</li>
+                    </ol>
+                    
+                    <div class="warning">
+                        <strong>Important :</strong> Assurez-vous que le fichier est enregistré avec l'extension ".ps1" et non ".txt". Si le fichier a été enregistré comme "SecurityAudit.ps1.txt", renommez-le pour supprimer l'extension ".txt".
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-container" id="script2">
+        <h2>3. Script d'Analyse des Résultats</h2>
+
+        <div class="script-section">
+            <div class="script-header">
+                <div class="script-title">Script 2 : SimpleAnalyze.ps1</div>
+                <div class="script-controls">
+                    <button class="copy-btn" onclick="copyScript('script2')">Copier le script</button>
+                </div>
+            </div>
+            <textarea id="script2" readonly>
+# Script d'Analyse Simplifiée des Résultats d'Audit de Sécurité
+# Auteur: Claude-PowerShell-Expert
+# Date: 6 Avril 2025
+# Description: Ce script simplifié analyse les résultats d'un audit de sécurité et génère
+# un rapport HTML simple et facile à comprendre.
+
+param (
+    [Parameter(Mandatory = $true)]
+    [PSObject]$AuditData,
+    
+    [Parameter(Mandatory = $false)]
+    [string]$OutputFile = "$env:USERPROFILE\Desktop\security_analysis_$(Get-Date -Format 'yyyyMMdd_HHmmss').html"
+)
+
+# Fonction pour calculer un score de sécurité global (0-100)
+function Calculate-SecurityScore {
+    param ([PSObject]$AuditData)
+    
+    $score = 100
+    $details = @()
+    
+    # Vérification des comptes administrateurs (max -20 points)
+    $adminCount = $AuditData.LocalAdminAccounts.Count
+    if ($adminCount -gt 3) {
+        $penaltyPoints = [Math]::Min(20, ($adminCount - 2) * 5)
+        $score -= $penaltyPoints
+        $details += @{
+            Category = "Comptes administrateurs"
+            Issue = "Trop de comptes administrateurs ($adminCount)"
+            Impact = "-$penaltyPoints points"
+            Recommendation = "Réduire le nombre de comptes administrateurs à 2 maximum"
+            Severity = "warning"
+        }
+    }
+    
+    # Vérification de Windows Defender (max -25 points)
+    if (-not $AuditData.DefenderStatus.AntivirusEnabled) {
+        $score -= 15
+        $details += @{
+            Category = "Windows Defender"
+            Issue = "Antivirus désactivé"
+            Impact = "-15 points"
+            Recommendation = "Activer Windows Defender Antivirus"
+            Severity = "danger"
+        }
+    }
+    
+    if (-not $AuditData.DefenderStatus.RealtimeProtectionEnabled) {
+        $score -= 10
+        $details += @{
+            Category = "Windows Defender"
+            Issue = "Protection en temps réel désactivée"
+            Impact = "-10 points"
+            Recommendation = "Activer la protection en temps réel de Windows Defender"
+            Severity = "danger"
+        }
+    }
+    
+    if ($AuditData.DefenderStatus.DefenderDefinitionAge -gt 7) {
+        $score -= 5
+        $details += @{
+            Category = "Windows Defender"
+            Issue = "Définitions antivirus obsolètes (> 7 jours)"
+            Impact = "-5 points"
+            Recommendation = "Mettre à jour les définitions antivirus"
+            Severity = "warning"
+        }
+    }
+    
+    # Vérification du pare-feu (max -20 points)
+    $disabledProfiles = $AuditData.FirewallStatus | Where-Object { -not $_.Enabled }
+    if ($disabledProfiles) {
+        $profilesStr = ($disabledProfiles.Profile -join ", ")
+        $penaltyPoints = $disabledProfiles.Count * 7
+        $score -= $penaltyPoints
+        $details += @{
+            Category = "Pare-feu Windows"
+            Issue = "Profils de pare-feu désactivés: $profilesStr"
+            Impact = "-$penaltyPoints points"
+            Recommendation = "Activer tous les profils de pare-feu Windows"
+            Severity = "danger"
+        }
+    }
+    
+    # Vérification des ports ouverts (max -10 points)
+    $highRiskPorts = @(21, 22, 23, 25, 53, 137, 138, 139, 445, 1433, 1434, 3306, 3389, 5432)
+    $openHighRiskPorts = $AuditData.OpenPorts | Where-Object { $highRiskPorts -contains $_.Port }
+    if ($openHighRiskPorts) {
+        $portsStr = ($openHighRiskPorts.Port -join ", ")
+        $penaltyPoints = [Math]::Min(10, $openHighRiskPorts.Count * 2)
+        $score -= $penaltyPoints
+        $details += @{
+            Category = "Ports ouverts"
+            Issue = "Ports à risque ouverts: $portsStr"
+            Impact = "-$penaltyPoints points"
+            Recommendation = "Fermer les ports à risque non nécessaires"
+            Severity = "warning"
+        }
+    }
+    
+    # Vérification des mises à jour Windows (max -15 points)
+    if ($AuditData.PendingUpdates.UpdateCount -gt 0) {
+        $penaltyBase = 5
+        $criticalPenalty = $AuditData.PendingUpdates.CriticalUpdates * 3
+        $normalPenalty = [Math]::Min(5, ($AuditData.PendingUpdates.UpdateCount - $AuditData.PendingUpdates.CriticalUpdates))
+        $totalPenalty = [Math]::Min(15, $penaltyBase + $criticalPenalty + $normalPenalty)
+        
+        $score -= $totalPenalty
+        $severity = if ($AuditData.PendingUpdates.CriticalUpdates -gt 0) { "danger" } else { "warning" }
+        $details += @{
+            Category = "Mises à jour Windows"
+            Issue = "$($AuditData.PendingUpdates.UpdateCount) mises à jour en attente (dont $($AuditData.PendingUpdates.CriticalUpdates) critiques)"
+            Impact = "-$totalPenalty points"
+            Recommendation = "Installer toutes les mises à jour en attente, en particulier les mises à jour critiques"
+            Severity = $severity
+        }
+    }
+    
+    # Vérification de la politique de mot de passe (max -20 points)
+    $minPwdLength = [int]$AuditData.PasswordPolicy.MinimumPasswordLength
+    if ($minPwdLength -lt 12) {
+        $penaltyPoints = [Math]::Min(10, (12 - $minPwdLength) * 2)
+        $score -= $penaltyPoints
+        $details += @{
+            Category = "Politique de mot de passe"
+            Issue = "Longueur minimale de mot de passe trop faible ($minPwdLength caractères)"
+            Impact = "-$penaltyPoints points"
+            Recommendation = "Augmenter la longueur minimale des mots de passe à au moins 12 caractères"
+            Severity = "warning"
+        }
+    }
+    
+    $maxPwdAge = [int]($AuditData.PasswordPolicy.MaximumPasswordAge -replace " jours", "")
+    if ($maxPwdAge -gt 90 -or $maxPwdAge -eq 0) {
+        $score -= 5
+        $ageDesc = if ($maxPwdAge -eq 0) { "illimitée" } else { "$maxPwdAge jours" }
+        $details += @{
+            Category = "Politique de mot de passe"
+            Issue = "Durée de vie des mots de passe trop longue ($ageDesc)"
+            Impact = "-5 points"
+            Recommendation = "Définir une durée de vie maximale des mots de passe de 90 jours"
+            Severity = "warning"
+        }
+    }
+    
+    $lockoutThreshold = [int]($AuditData.PasswordPolicy.LockoutThreshold -replace " tentatives", "")
+    if ($lockoutThreshold -eq 0 -or $lockoutThreshold -gt 5) {
+        $score -= 5
+        $thresholdDesc = if ($lockoutThreshold -eq 0) { "désactivé" } else { "$lockoutThreshold tentatives" }
+        $details += @{
+            Category = "Politique de mot de passe"
+            Issue = "Seuil de verrouillage inapproprié ($thresholdDesc)"
+            Impact = "-5 points"
+            Recommendation = "Configurer le verrouillage du compte après 3 à 5 tentatives échouées"
+            Severity = "warning"
+        }
+    }
+    
+    # S'assurer que le score reste dans la plage 0-100
+    $finalScore = [Math]::Max(0, [Math]::Min(100, $score))
+    
+    return @{
+        Score = $finalScore
+        Details = $details
+    }
+}
+
+# Calculer le score de sécurité
+$SecurityAnalysis = Calculate-SecurityScore -AuditData $AuditData
+
+# Déterminer la couleur et le niveau du score
+$scoreColor = if ($SecurityAnalysis.Score -ge 90) {
+    "#22c55e" # Green
+}
+elseif ($SecurityAnalysis.Score -ge 70) {
+    "#eab308" # Yellow
+}
+elseif ($SecurityAnalysis.Score -ge 50) {
+    "#f97316" # Orange
+}
+else {
+    "#ef4444" # Red
+}
+
+$scoreLabel = if ($SecurityAnalysis.Score -ge 90) {
+    "Excellent"
+}
+elseif ($SecurityAnalysis.Score -ge 70) {
+    "Bon"
+}
+elseif ($SecurityAnalysis.Score -ge 50) {
+    "Moyen"
+}
+else {
+    "Faible"
+}
+
+# Générer un rapport HTML simple
+$html = @"
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport d'Audit de Sécurité - $($AuditData.ComputerName)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2563eb;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .score-container {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+            color: $scoreColor;
+        }
+        .score-label {
+            font-size: 18px;
+            font-weight: bold;
+            color: $scoreColor;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #f1f5f9;
+        }
+        tr:hover {
+            background-color: #f8fafc;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .issue-category {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background-color: #f1f5f9;
+            font-size: 12px;
+        }
+        .issue-impact {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        .danger {
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+        .warning {
+            background-color: #fef9c3;
+            color: #eab308;
+        }
+        .success {
+            background-color: #dcfce7;
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>Rapport d'Audit de Sécurité Windows</h1>
+            <p><strong>Ordinateur:</strong> $($AuditData.ComputerName)</p>
+            <p><strong>Date de l'analyse:</strong> $($AuditData.ScanDate)</p>
+            <p><strong>Version de Windows:</strong> $($AuditData.WindowsVersion.Caption)</p>
+        </div>
+        <div class="score-container">
+            <div class="score">$($SecurityAnalysis.Score)</div>
+            <div class="score-label">$scoreLabel</div>
+            <div>Score de Sécurité</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Problèmes Identifiés</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Catégorie</th>
+                    <th>Problème</th>
+                    <th>Impact</th>
+                    <th>Recommandation</th>
+                </tr>
+            </thead>
+            <tbody>
+$(foreach ($issue in $SecurityAnalysis.Details) {
+    "                <tr>
+                    <td><span class=`"issue-category $($issue.Severity)`">$($issue.Category)</span></td>
+                    <td>$($issue.Issue)</td>
+                    <td class=`"issue-impact`">$($issue.Impact)</td>
+                    <td>$($issue.Recommendation)</td>
+                </tr>`n"
+})
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+"@
+
+# Enregistrer le rapport
+$html | Out-File -FilePath $OutputFile -Encoding utf8
+
+Write-Host "L'analyse de sécurité est terminée. Le rapport a été enregistré dans: $OutputFile" -ForegroundColor Green
+</textarea>
+        </div>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">Créez le deuxième script PowerShell</div>
+                <div class="step-description">
+                    <p>Ce script analyse les données collectées par le premier script et génère un rapport HTML :</p>
+                    <ol>
+                        <li>Copiez l'intégralité du code ci-dessus (utilisez le bouton "Copier le script")</li>
+                        <li>Ouvrez un nouveau document dans le Bloc-notes</li>
+                        <li>Collez-y le code</li>
+                        <li>Cliquez sur "Fichier" > "Enregistrer sous"</li>
+                        <li>Naviguez vers le dossier "WindowsSecurityAudit\Scripts" que vous avez créé sur votre Bureau</li>
+                        <li>Dans le champ "Nom de fichier", tapez <strong>SimpleAnalyze.ps1</strong></li>
+                        <li>Dans le menu déroulant "Type", sélectionnez "Tous les fichiers (*.*)"</li>
+                        <li>Cliquez sur "Enregistrer"</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-container" id="execution">
+        <h2>4. Exécution de l'Audit de Sécurité</h2>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">Ouvrez PowerShell en tant qu'administrateur</div>
+                <div class="step-description">
+                    <p>Pour exécuter les scripts, vous devez ouvrir PowerShell avec des droits d'administrateur :</p>
+                    <ol>
+                        <li>Faites un clic droit sur le menu Démarrer (ou appuyez sur Windows + X)</li>
+                        <li>Sélectionnez "Windows PowerShell (Admin)" ou "Terminal (Admin)"</li>
+                        <li>Si une boîte de dialogue de contrôle de compte d'utilisateur apparaît, cliquez sur "Oui"</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <div class="step-title">Naviguez vers le dossier des scripts</div>
+                <div class="step-description">
+                    <p>Dans la fenêtre PowerShell, naviguez vers le dossier contenant vos scripts :</p>
+                    <div class="code-block">cd "C:\Users\VotreNomUtilisateur\Desktop\WindowsSecurityAudit\Scripts"</div>
+                    <p>Remplacez "VotreNomUtilisateur" par votre nom d'utilisateur Windows.</p>
+                    
+                    <div class="tip">
+                        <strong>Astuce :</strong> Vous pouvez aussi ouvrir l'explorateur de fichiers, naviguer vers le dossier "Scripts", puis dans la barre d'adresse, cliquer et taper "powershell" puis appuyer sur Entrée. Cela ouvrira PowerShell directement dans ce dossier.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <div class="step-title">Autorisez l'exécution des scripts</div>
+                <div class="step-description">
+                    <p>Si ce n'est pas déjà fait, exécutez la commande suivante pour autoriser l'exécution des scripts :</p>
+                    <div class="code-block">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <div class="step-title">Exécutez le script d'audit</div>
+                <div class="step-description">
+                    <p>Lancez le script d'audit pour collecter les informations de sécurité :</p>
+                    <div class="code-block">.\SecurityAudit.ps1</div>
+                    <p>Le script s'exécutera pendant quelques secondes ou minutes, en fonction de votre système.</p>
+                    <p>À la fin, il affichera un message indiquant que l'audit est terminé et donnera le chemin du fichier JSON où les résultats ont été enregistrés.</p>
+                    
+                    <div class="note">
+                        <strong>Note :</strong> Il est possible que vous voyiez quelques messages d'erreur, en particulier concernant les variables. Ces erreurs sont généralement sans conséquence et le script continuera de s'exécuter.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+                <div class="step-title">Chargez les résultats de l'audit</div>
+                <div class="step-description">
+                    <p>Une fois le script d'audit terminé, chargez les résultats avec la commande suivante (copiez la commande exacte qui s'affiche à l'écran) :</p>
+                    <div class="code-block">$auditData = Get-Content -Path "C:\Users\VotreNomUtilisateur\Desktop\security_audit_XXXXXXXX_XXXXXX.json" | ConvertFrom-Json</div>
+                    <p>Remplacez le chemin par celui qui a été affiché dans les résultats du script d'audit.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">6</div>
+            <div class="step-content">
+                <div class="step-title">Exécutez le script d'analyse</div>
+                <div class="step-description">
+                    <p>Analysez les résultats et générez un rapport HTML :</p>
+                    <div class="code-block">.\SimpleAnalyze.ps1 -AuditData $auditData</div>
+                    <p>Le script affichera un message indiquant que l'analyse est terminée et donnera le chemin du fichier HTML où le rapport a été enregistré.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-container" id="analyse">
+        <h2>5. Analyse des Résultats</h2>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">Ouvrez le rapport HTML</div>
+                <div class="step-description">
+                    <p>Pour consulter les résultats de l'audit :</p>
+                    <ol>
+                        <li>Naviguez vers votre Bureau</li>
+                        <li>Localisez le fichier HTML généré (par exemple "security_analysis_20250406_180000.html")</li>
+                        <li>Double-cliquez dessus pour l'ouvrir dans votre navigateur web par défaut</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <div class="step-title">Interprétez le score de sécurité</div>
+                <div class="step-description">
+                    <p>En haut du rapport, vous verrez un score de sécurité sur 100 :</p>
+                    <ul>
+                        <li><strong>90-100 (Excellent) :</strong> Votre système est bien sécurisé.</li>
+                        <li><strong>70-89 (Bon) :</strong> Votre système est relativement sécurisé mais présente quelques faiblesses.</li>
+                        <li><strong>50-69 (Moyen) :</strong> Votre système présente plusieurs vulnérabilités à corriger.</li>
+                        <li><strong>0-49 (Faible) :</strong> Votre système présente des vulnérabilités critiques nécessitant une action immédiate.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <div class="step-title">Examinez les problèmes identifiés</div>
+                <div class="step-description">
+                    <p>La section "Problèmes Identifiés" liste tous les problèmes de sécurité détectés, classés par impact :</p>
+                    <ul>
+                        <li><strong>Catégorie :</strong> Indique le domaine concerné (Windows Defender, Pare-feu, etc.)</li>
+                        <li><strong>Problème :</strong> Décrit le problème spécifique</li>
+                        <li><strong>Impact :</strong> Montre à quel point cela affecte votre score de sécurité</li>
+                        <li><strong>Recommandation :</strong> Propose une solution pour corriger le problème</li>
+                    </ul>
+                    <p>Les problèmes sont affichés en rouge (critiques), orange (importants) ou jaune (moyens) selon leur gravité.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-container" id="recommandations">
+        <h2>6. Mise en Œuvre des Recommandations</h2>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">Priorisez les actions</div>
+                <div class="step-description">
+                    <p>Commencez par les problèmes les plus critiques (en rouge), puis passez aux problèmes importants (en orange) et enfin aux problèmes moyens (en jaune).</p>
+                    <p>En général, suivez cet ordre de priorité :</p>
+                    <ol>
+                        <li>Activer Windows Defender et la protection en temps réel</li>
+                        <li>Installer les mises à jour critiques</li>
+                        <li>Activer tous les profils de pare-feu</li>
+                        <li>Fermer les ports à risque non nécessaires</li>
+                        <li>Renforcer la politique de mot de passe</li>
+                        <li>Réduire le nombre de comptes administrateurs</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <div class="step-title">Corrigez les problèmes courants</div>
+                <div class="step-description">
+                    <h4>Activation de Windows Defender</h4>
+                    <ol>
+                        <li>Ouvrez "Paramètres" > "Mise à jour et sécurité" > "Sécurité Windows"</li>
+                        <li>Cliquez sur "Protection contre les virus et menaces"</li>
+                        <li>Sous "Paramètres de protection contre les virus et menaces", activez la "Protection en temps réel"</li>
+                    </ol>
+
+                    <h4>Installation des mises à jour Windows</h4>
+                    <ol>
+                        <li>Ouvrez "Paramètres" > "Mise à jour et sécurité" > "Windows Update"</li>
+                        <li>Cliquez sur "Rechercher des mises à jour"</li>
+                        <li>Installez toutes les mises à jour disponibles</li>
+                    </ol>
+
+                    <h4>Activation du pare-feu Windows</h4>
+                    <ol>
+                        <li>Ouvrez "Panneau de configuration" > "Système et sécurité" > "Pare-feu Windows Defender"</li>
+                        <li>Dans le panneau de gauche, cliquez sur "Activer ou désactiver le Pare-feu Windows Defender"</li>
+                        <li>Activez le pare-feu pour les profils "Domaine", "Privé" et "Public"</li>
+                        <li>Cliquez sur "OK" pour enregistrer les modifications</li>
+                    </ol>
+
+                    <h4>Renforcement de la politique de mot de passe</h4>
+                    <ol>
+                        <li>Appuyez sur Windows + R, tapez "secpol.msc" et appuyez sur Entrée (ou cherchez "Stratégie de sécurité locale" dans le menu Démarrer)</li>
+                        <li>Naviguez vers "Stratégies de compte" > "Stratégie de mot de passe"</li>
+                        <li>Double-cliquez sur "Longueur minimale du mot de passe" et définissez-la à 12 caractères ou plus</li>
+                        <li>Double-cliquez sur "Durée de vie maximale du mot de passe" et réglez-la sur 90 jours</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <div class="step-title">Effectuez un nouvel audit après les corrections</div>
+                <div class="step-description">
+                    <p>Une fois que vous avez mis en œuvre les recommandations :</p>
+                    <ol>
+                        <li>Exécutez à nouveau le script d'audit pour vérifier que les problèmes ont été corrigés</li>
+                        <li>Comparez le nouveau score avec l'ancien pour voir l'amélioration</li>
+                        <li>Vérifiez s'il reste des problèmes à résoudre</li>
+                    </ol>
+                    <p>Répétez ce processus jusqu'à obtenir un score satisfaisant (idéalement 90+).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyScript(id) {
+            const textarea = document.getElementById(id);
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Change button text temporarily
+            const button = event.target;
+            const originalText = button.innerText;
+            button.innerText = "Copié !";
+            
+            setTimeout(() => {
+                button.innerText = originalText;
+            }, 2000);
+        }
+
+        // Make sure all links to sections work properly
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.section-nav a');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
